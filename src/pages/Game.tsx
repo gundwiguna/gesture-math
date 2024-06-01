@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import useGestureRecognizer from "../utils/useGestureRecognizer";
+import useGame from '../utils/useGame';
 
 declare type RunningMode = "IMAGE" | "VIDEO";
 
@@ -16,6 +17,7 @@ function Game() {
   const videoRef = useRef<any>();
   const gestureOutputRef = useRef<any>();
   const canvasOutputRef = useRef<any>();
+  const gameInstance = useGame();
 
   // Check if webcam access is supported.
   function hasGetUserMedia() {
@@ -37,30 +39,21 @@ function Game() {
     setWebcamRunning(!webcamRunning);
   }
 
-  function ranodmizeNumber(range = 9) {
-    const generated = Math.floor(Math.random() * range);
-    return generated;
-  }
-  function generateQuestion() {
-    const answer = ranodmizeNumber(5);
-    const numberB = ranodmizeNumber(20);
-    const numberA = numberB + answer;
-    const label = `${numberA} - ${numberB} = ${answer}`;
-    return label;
-  }
-
   useEffect(() => {
     setGestureParams({
       videoElement: videoRef.current,
       canvasOutputElement: canvasOutputRef.current,
       gestureOutputElement: gestureOutputRef.current,
     });
-    for (let i = 0; i < 10; i++) {
-      console.log(generateQuestion());
-    }
+
+    (window as any).gameInstance = gameInstance;
   }, []);
   return (
     <div>
+      <div>
+        {gameInstance.currentTimeProgress}
+        <button onClick={gameInstance.startGame}>start</button>
+      </div>
       <button onClick={enableCam}>
         {webcamRunning ? 'Disable Prediction' : 'Enable Prediction'}
       </button>
@@ -70,7 +63,7 @@ function Game() {
         <p ref={gestureOutputRef} id='gesture_output' className="output" />
       </div>
 
-      <div id="prompt" style={{ display: ready ? 'block' : 'none' }}>
+      <div id="prompt" style={{ display: ready && webcamRunning ? 'block' : 'none' }}>
         <h3>Classified hand gesture:</h3>
         <div id="number-container">{gestureMessage}</div>
       </div>

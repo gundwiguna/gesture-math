@@ -40,11 +40,19 @@ function useGestureRecognizer() {
   });
   const lastVideoTime = useRef(-1);
   const resultsRef = useRef<any>();
+  // const stream = useRef();
   const videoHeight = "360px";
   const videoWidth = "480px";
 
   useEffect(() => {
     const { videoElement } = gestureParams;
+
+    if (videoElement && videoElement.srcObject && !webcamRunning) {
+      videoElement.srcObject.getTracks().forEach((track: any) => {
+        track.stop();
+      });
+    }
+
     if (!webcamRunning || !videoElement) {
       return;
     }
