@@ -4,7 +4,8 @@ import useGame from '../utils/useGame';
 
 declare type RunningMode = "IMAGE" | "VIDEO";
 
-function Game() {
+const Game = () => {
+  const gameInstance = useGame(15);
   const {
     gestureRecognizer,
     ready,
@@ -12,20 +13,19 @@ function Game() {
     gestureMessage,
     setWebcamRunning,
     webcamRunning
-  } = useGestureRecognizer();
+  } = useGestureRecognizer(gameInstance.answerQuestion);
 
   const videoRef = useRef<any>();
   const gestureOutputRef = useRef<any>();
   const canvasOutputRef = useRef<any>();
-  const gameInstance = useGame();
 
   // Check if webcam access is supported.
-  function hasGetUserMedia() {
+  const hasGetUserMedia = () => {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-  }
+  };
   // If webcam supported, add event listener to button for when user
   // wants to activate it.
-  function enableCam() {
+  const enableCam = () => {
     if (!hasGetUserMedia()) {
       alert("getUserMedia() is not supported by your browser");
       return;
@@ -37,7 +37,7 @@ function Game() {
     }
 
     setWebcamRunning(!webcamRunning);
-  }
+  };
 
   useEffect(() => {
     setGestureParams({
@@ -51,9 +51,13 @@ function Game() {
   return (
     <div>
       <div>
-        {gameInstance.currentTimeProgress}
-        <button onClick={gameInstance.startGame}>start</button>
+        <div>{gameInstance.currentTimeProgress}</div>
+        {!gameInstance.timerRunning && <button onClick={gameInstance.startGame}>start</button>}
+        {gameInstance.timerRunning && <button onClick={gameInstance.stopTimer}>stop</button>}
+        {gameInstance.timerRunning && 'Timer is running'}
       </div>
+      <div>Score: {gameInstance.score}</div>
+      <div>Qestion: {gameInstance.queLabel}</div>
       <button onClick={enableCam}>
         {webcamRunning ? 'Disable Prediction' : 'Enable Prediction'}
       </button>
@@ -69,6 +73,6 @@ function Game() {
       </div>
     </div>
   );
-}
+};
 
 export default Game;

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 
 declare type RunningMode = "IMAGE" | "VIDEO";
 
-function useGestureRecognizer() {
+const useGestureRecognizer = (resultCallback?: any) => {
   const [gestureRecognizer, setGestureRecognizer] = useState<GestureRecognizer | null>(null);
   const [ready, setready] = useState<boolean>(false);
   let runningMode: RunningMode = "IMAGE";
@@ -114,6 +114,9 @@ function useGestureRecognizer() {
       ).toFixed(2);
       const handedness = resultsRef.current.handednesses[0][0].displayName;
       setGestureMessage(`GestureRecognizer: ${categoryName}\n Confidence: ${categoryScore} %\n Handedness: ${handedness}`);
+      if (resultCallback) {
+        resultCallback(categoryName);
+      }
     } else {
       gestureOutputElement.style.display = "none";
     }
@@ -133,6 +136,6 @@ function useGestureRecognizer() {
     gestureMessage,
     setGestureParams
   };
-}
+};
 
 export default useGestureRecognizer;
