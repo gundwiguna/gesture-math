@@ -106,7 +106,7 @@ const useGestureRecognizer = (resultCallback?: any) => {
     }
     canvasCtx.restore();
     if (resultsRef.current.gestures.length > 0) {
-      gestureOutputElement.style.display = "block";
+      gestureOutputElement.style.display = "none" || "block"; // disabled
       gestureOutputElement.style.width = videoWidth;
       const categoryName = resultsRef.current.gestures[0][0].categoryName;
       const categoryScore = parseFloat(

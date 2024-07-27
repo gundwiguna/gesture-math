@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-type GameStatus = 'Unstarted' | 'Running' | 'Stopped' | 'Winning' | 'Losing';
+// type GameStatus = 'Unstarted' | 'Running' | 'Stopped' | 'Winning' | 'Losing';
 
 const useGame = (scoreToWin = 5) => {
   const [score, setScore] = React.useState(0);
   const [queLabel, setQueLabel] = React.useState('');
   const currentAnswer = React.useRef<number | null>(null);
-  const [status, setStatus] = React.useState<GameStatus>('Unstarted');
+  // const [status, setStatus] = React.useState<GameStatus>('Unstarted');
 
   const timerInstance = React.useRef<any>(null);
   const timeInterval = 100; // update every 0.1 seconds
@@ -28,7 +28,7 @@ const useGame = (scoreToWin = 5) => {
     const answer = ranodmizeNumber(5);
     const numberB = ranodmizeNumber(20);
     const numberA = numberB + answer;
-    const label = `${numberA} - ${numberB} = ${answer}`;
+    const label = `${numberA} - ${numberB} = ?`;
 
     currentAnswer.current = answer;
     setQueLabel(label);
@@ -53,9 +53,9 @@ const useGame = (scoreToWin = 5) => {
     setTimerRunning(false);
   };
 
-  const handleTimeOut = () => {
-      endGame();
-  };
+  // const handleTimeOut = () => {
+  //     endGame();
+  // };
 
   const startGame = () => {
     startTimer();

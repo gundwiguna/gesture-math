@@ -50,21 +50,43 @@ const Game = () => {
   }, []);
   return (
     <div>
-      <div>
-        <div>{gameInstance.currentTimeProgress}</div>
-        {!gameInstance.timerRunning && <button onClick={gameInstance.startGame}>start</button>}
-        {gameInstance.timerRunning && <button onClick={gameInstance.stopTimer}>stop</button>}
-        {gameInstance.timerRunning && 'Timer is running'}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button onClick={enableCam}>
+          {webcamRunning ? 'Disable Camera' : 'Enable Camera'}
+        </button>
+        {!gameInstance.timerRunning && webcamRunning && <button onClick={gameInstance.startGame}>Start Game</button>}
+        {gameInstance.timerRunning && <button onClick={gameInstance.stopTimer}>Stop Game</button>}
       </div>
       <div>Score: {gameInstance.score}</div>
-      <div>Qestion: {gameInstance.queLabel}</div>
-      <button onClick={enableCam}>
-        {webcamRunning ? 'Disable Prediction' : 'Enable Prediction'}
-      </button>
-      <div style={{ position: 'relative', transform: 'rotateY(180deg)' }}>
-        <video ref={videoRef} id="webcam" autoPlay playsInline></video>
-        <canvas ref={canvasOutputRef} className="output_canvas" id="output_canvas" width="1280" height="720" style={{ position: 'absolute', left: '0px', top: '0px' }}></canvas>
-        <p ref={gestureOutputRef} id='gesture_output' className="output" />
+
+      <div style={{ display: 'flex', justifyContent: 'center'}}>
+        <div style={{
+            width: `${gameInstance.timerRunning ? (100 - gameInstance.currentTimeProgress) : 0}%`,
+            height: '5px', backgroundColor: '#FFF'
+          }} className='time-left'></div>
+      </div>
+
+      <div className='question-container'>
+        <div className='question-border'>
+          <div className='question-board'>
+            {!webcamRunning ? 'Enable Camera To Begin Playing' : gameInstance.timerRunning ? gameInstance.queLabel : 'Ready To Play'}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style={{
+            position: 'relative',
+            transform: 'rotateY(180deg) scale(0.5) translateY(-50%)',
+            marginBottom: '-50%',
+            marginTop: '10px',
+            padding: '10px',
+            backgroundColor: '#FFF'
+          }}>
+          <video ref={videoRef} id="webcam" autoPlay playsInline></video>
+          <canvas ref={canvasOutputRef} className="output_canvas" id="output_canvas" width="1280" height="720" style={{ position: 'absolute', left: '0px', top: '0px' }}></canvas>
+          <p ref={gestureOutputRef} id='gesture_output' className="output" />
+        </div>
       </div>
 
       <div id="prompt" style={{ display: ready && webcamRunning ? 'block' : 'none' }}>
